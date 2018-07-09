@@ -55,15 +55,18 @@
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.SOH_Text = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.textBox7 = new System.Windows.Forms.TextBox();
-            this.textBox8 = new System.Windows.Forms.TextBox();
+            this.PUD_Text = new System.Windows.Forms.TextBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.Make_Data = new System.Windows.Forms.Button();
+            this.Send_Data = new System.Windows.Forms.Button();
+            this.CRC_Text = new serial_cmd.HexNumberTextBox(this.components);
+            this.CMD_Text = new serial_cmd.HexNumberTextBox(this.components);
+            this.Len_Text = new serial_cmd.HexNumberTextBox(this.components);
+            this.VER_Text = new serial_cmd.HexNumberTextBox(this.components);
+            this.SOH_Text = new serial_cmd.HexNumberTextBox(this.components);
             this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -125,7 +128,7 @@
             // 
             this.But_OpenPort.Location = new System.Drawing.Point(351, 44);
             this.But_OpenPort.Name = "But_OpenPort";
-            this.But_OpenPort.Size = new System.Drawing.Size(75, 23);
+            this.But_OpenPort.Size = new System.Drawing.Size(105, 23);
             this.But_OpenPort.TabIndex = 4;
             this.But_OpenPort.Text = "打开串口";
             this.But_OpenPort.UseVisualStyleBackColor = true;
@@ -252,7 +255,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Consolas", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(110, 186);
+            this.label7.Location = new System.Drawing.Point(106, 186);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(64, 17);
             this.label7.TabIndex = 15;
@@ -263,7 +266,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Consolas", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(283, 186);
+            this.label8.Location = new System.Drawing.Point(274, 186);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(64, 17);
             this.label8.TabIndex = 17;
@@ -274,7 +277,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Consolas", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(207, 186);
+            this.label9.Location = new System.Drawing.Point(191, 186);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(56, 17);
             this.label9.TabIndex = 16;
@@ -285,7 +288,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Consolas", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(555, 186);
+            this.label10.Location = new System.Drawing.Point(540, 186);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(32, 17);
             this.label10.TabIndex = 21;
@@ -305,7 +308,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Consolas", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(475, 186);
+            this.label12.Location = new System.Drawing.Point(456, 186);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(32, 17);
             this.label12.TabIndex = 19;
@@ -315,81 +318,120 @@
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Consolas", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(367, 186);
+            this.label13.Location = new System.Drawing.Point(358, 186);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(80, 17);
             this.label13.TabIndex = 18;
             this.label13.Text = "Packet ID";
             // 
+            // PUD_Text
+            // 
+            this.PUD_Text.Location = new System.Drawing.Point(25, 262);
+            this.PUD_Text.Name = "PUD_Text";
+            this.PUD_Text.Size = new System.Drawing.Size(558, 24);
+            this.PUD_Text.TabIndex = 29;
+            this.PUD_Text.TextChanged += new System.EventHandler(this.PUD_Text_TextChanged);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(277, 205);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(54, 25);
+            this.comboBox1.TabIndex = 37;
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(361, 206);
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(54, 24);
+            this.numericUpDown1.TabIndex = 38;
+            // 
+            // Make_Data
+            // 
+            this.Make_Data.Location = new System.Drawing.Point(25, 317);
+            this.Make_Data.Name = "Make_Data";
+            this.Make_Data.Size = new System.Drawing.Size(105, 23);
+            this.Make_Data.TabIndex = 39;
+            this.Make_Data.Text = "数据组包";
+            this.Make_Data.UseVisualStyleBackColor = true;
+            // 
+            // Send_Data
+            // 
+            this.Send_Data.Location = new System.Drawing.Point(166, 317);
+            this.Send_Data.Name = "Send_Data";
+            this.Send_Data.Size = new System.Drawing.Size(105, 23);
+            this.Send_Data.TabIndex = 40;
+            this.Send_Data.Text = "发送数据";
+            this.Send_Data.UseVisualStyleBackColor = true;
+            // 
+            // CRC_Text
+            // 
+            this.CRC_Text.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.CRC_Text.Location = new System.Drawing.Point(529, 206);
+            this.CRC_Text.MaxLength = 4;
+            this.CRC_Text.Name = "CRC_Text";
+            this.CRC_Text.ReadOnly = true;
+            this.CRC_Text.Size = new System.Drawing.Size(54, 24);
+            this.CRC_Text.TabIndex = 36;
+            this.CRC_Text.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // CMD_Text
+            // 
+            this.CMD_Text.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.CMD_Text.Location = new System.Drawing.Point(445, 206);
+            this.CMD_Text.MaxLength = 4;
+            this.CMD_Text.Name = "CMD_Text";
+            this.CMD_Text.Size = new System.Drawing.Size(54, 24);
+            this.CMD_Text.TabIndex = 35;
+            this.CMD_Text.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // Len_Text
+            // 
+            this.Len_Text.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.Len_Text.Location = new System.Drawing.Point(193, 206);
+            this.Len_Text.MaxLength = 4;
+            this.Len_Text.Name = "Len_Text";
+            this.Len_Text.ReadOnly = true;
+            this.Len_Text.Size = new System.Drawing.Size(54, 24);
+            this.Len_Text.TabIndex = 32;
+            this.Len_Text.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // VER_Text
+            // 
+            this.VER_Text.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.VER_Text.Location = new System.Drawing.Point(109, 206);
+            this.VER_Text.MaxLength = 4;
+            this.VER_Text.Name = "VER_Text";
+            this.VER_Text.Size = new System.Drawing.Size(54, 24);
+            this.VER_Text.TabIndex = 31;
+            this.VER_Text.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // SOH_Text
             // 
+            this.SOH_Text.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.SOH_Text.Location = new System.Drawing.Point(25, 206);
+            this.SOH_Text.MaxLength = 4;
             this.SOH_Text.Name = "SOH_Text";
             this.SOH_Text.Size = new System.Drawing.Size(54, 24);
-            this.SOH_Text.TabIndex = 22;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(113, 206);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(54, 24);
-            this.textBox2.TabIndex = 23;
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(201, 206);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(54, 24);
-            this.textBox3.TabIndex = 24;
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(289, 206);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(54, 24);
-            this.textBox4.TabIndex = 25;
-            // 
-            // textBox5
-            // 
-            this.textBox5.Location = new System.Drawing.Point(377, 206);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(54, 24);
-            this.textBox5.TabIndex = 26;
-            // 
-            // textBox6
-            // 
-            this.textBox6.Location = new System.Drawing.Point(465, 206);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(54, 24);
-            this.textBox6.TabIndex = 27;
-            // 
-            // textBox7
-            // 
-            this.textBox7.Location = new System.Drawing.Point(553, 206);
-            this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(54, 24);
-            this.textBox7.TabIndex = 28;
-            // 
-            // textBox8
-            // 
-            this.textBox8.Location = new System.Drawing.Point(25, 262);
-            this.textBox8.Name = "textBox8";
-            this.textBox8.Size = new System.Drawing.Size(582, 24);
-            this.textBox8.TabIndex = 29;
+            this.SOH_Text.TabIndex = 30;
+            this.SOH_Text.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // Serial
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(834, 534);
-            this.Controls.Add(this.textBox8);
-            this.Controls.Add(this.textBox7);
-            this.Controls.Add(this.textBox6);
-            this.Controls.Add(this.textBox5);
-            this.Controls.Add(this.textBox4);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.Send_Data);
+            this.Controls.Add(this.Make_Data);
+            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.CRC_Text);
+            this.Controls.Add(this.CMD_Text);
+            this.Controls.Add(this.Len_Text);
+            this.Controls.Add(this.VER_Text);
             this.Controls.Add(this.SOH_Text);
+            this.Controls.Add(this.PUD_Text);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label12);
@@ -421,6 +463,7 @@
             this.Load += new System.EventHandler(this.Serial_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -453,14 +496,16 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TextBox SOH_Text;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.TextBox textBox7;
-        private System.Windows.Forms.TextBox textBox8;
+        private System.Windows.Forms.TextBox PUD_Text;
+        private HexNumberTextBox SOH_Text;
+        private HexNumberTextBox VER_Text;
+        private HexNumberTextBox Len_Text;
+        private HexNumberTextBox CMD_Text;
+        private HexNumberTextBox CRC_Text;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Button Make_Data;
+        private System.Windows.Forms.Button Send_Data;
     }
 }
 

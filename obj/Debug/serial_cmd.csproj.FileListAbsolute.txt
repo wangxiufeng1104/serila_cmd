@@ -8,3 +8,13 @@ E:\工作资料\serial_cmd\serial_cmd\serial_cmd\obj\Debug\serial_cmd.csproj.Cor
 E:\工作资料\serial_cmd\serial_cmd\serial_cmd\obj\Debug\serial_cmd.exe
 E:\工作资料\serial_cmd\serial_cmd\serial_cmd\obj\Debug\serial_cmd.pdb
 E:\工作资料\serial_cmd\serial_cmd\serial_cmd\obj\Debug\serial_cmd.Serial.resources
+F:\spss\serila_cmd\bin\Debug\serial_cmd.exe.config
+F:\spss\serila_cmd\bin\Debug\serial_cmd.exe
+F:\spss\serila_cmd\bin\Debug\serial_cmd.pdb
+F:\spss\serila_cmd\obj\Debug\serial_cmd.Serial.resources
+F:\spss\serila_cmd\obj\Debug\serial_cmd.Properties.Resources.resources
+F:\spss\serila_cmd\obj\Debug\serial_cmd.csproj.GenerateResource.cache
+F:\spss\serila_cmd\obj\Debug\serial_cmd.csproj.CoreCompileInputs.cache
+F:\spss\serila_cmd\obj\Debug\serial_cmd.exe
+F:\spss\serila_cmd\obj\Debug\serial_cmd.pdb
+F:\spss\serila_cmd\obj\Debug\serial_cmd.csprojAssemblyReference.cache

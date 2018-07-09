@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace serial_cmd
 {
@@ -23,9 +24,30 @@ namespace serial_cmd
         {
             SerialSingle = this;
             InitializeComponent();
+            SOH_Text.MaxLength = 2;
+            SOH_Text.Text = "7e";
+            VER_Text.MaxLength = 2;
+            VER_Text.Text = "10";
+
+
+
+
+            PUD_Text.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            PUD_Text.KeyPress += numberTextBox_KeyPress;
             this.Text = this.Text + softwareversion;
             serilal_defaultSetting();
 
+        }
+        private void numberTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (Char.IsNumber(e.KeyChar) || (e.KeyChar >= 'a' && e.KeyChar <= 'f') || (e.KeyChar >= 'A' && e.KeyChar <= 'F') || (e.KeyChar == (char)8) || (e.KeyChar == 0x20))
+            {
+                e.Handled = false;
+            }
+            else
+            {
+                e.Handled = true;
+            }
         }
         public static Serial GetSingle()
         {
@@ -316,5 +338,54 @@ namespace serial_cmd
         {
 
         }
+
+        private void PUD_Text_TextChanged(object sender, EventArgs e)
+        {
+            if(PUD_Text.TextLength > 0)
+            {
+                char[] chars;
+                string str1;
+                int i = 0;
+                Console.Write($"Length = {PUD_Text.TextLength}  ");
+                string trim = Regex.Replace(PUD_Text.Text, @"\s", "");
+                if((trim.Length % 2) == 1)
+                {
+                    str1 = trim.Substring(0,trim.Length - 1);
+                }
+                else
+                {
+                    str1 = trim;
+                }
+                chars = str1.ToCharArray();
+                Console.WriteLine(chars);
+                foreach(char c in chars)
+                {
+                    Console.Write($"{c} ");
+                }
+                Console.WriteLine();
+                string[] chartostring = new string[chars.Length/2];
+                byte[] num = new byte[chars.Length/2];
+                for ( i = 0;i < chars.Length/2;i ++)
+                {
+                    chartostring[i] = chars[i * 2].ToString() + chars[i * 2 + 1].ToString();
+                }
+                i = 0;
+                foreach(string s in chartostring)
+                {
+                    Console.Write($"{s} ");
+                    num[i] = Byte.Parse(Byte.Parse(s,System.Globalization.NumberStyles.HexNumber).ToString("X2"), 
+                                            System.Globalization.NumberStyles.HexNumber);
+                    i++;
+                }
+                Console.WriteLine();
+                foreach (byte b in num)
+                {
+                    Console.Write($"{b} ");
+                    
+                }
+                Console.WriteLine();
+            }
+        }
+
     }
 }
