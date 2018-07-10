@@ -55,8 +55,8 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.PUD_Text = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.Add_combox = new System.Windows.Forms.ComboBox();
+            this.PackNum = new System.Windows.Forms.NumericUpDown();
             this.Make_Data = new System.Windows.Forms.Button();
             this.Send_Data = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
@@ -72,7 +72,7 @@
             this.VER_Text = new serial_cmd.HexNumberTextBox(this.components);
             this.SOH_Text = new serial_cmd.HexNumberTextBox(this.components);
             this.statusStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PackNum)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -335,20 +335,21 @@
             this.PUD_Text.TabIndex = 29;
             this.PUD_Text.TextChanged += new System.EventHandler(this.PUD_Text_TextChanged);
             // 
-            // comboBox1
+            // Add_combox
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(270, 205);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(54, 25);
-            this.comboBox1.TabIndex = 37;
+            this.Add_combox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Add_combox.FormattingEnabled = true;
+            this.Add_combox.Location = new System.Drawing.Point(270, 205);
+            this.Add_combox.Name = "Add_combox";
+            this.Add_combox.Size = new System.Drawing.Size(54, 25);
+            this.Add_combox.TabIndex = 37;
             // 
-            // numericUpDown1
+            // PackNum
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(15, 264);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(54, 24);
-            this.numericUpDown1.TabIndex = 38;
+            this.PackNum.Location = new System.Drawing.Point(15, 264);
+            this.PackNum.Name = "PackNum";
+            this.PackNum.Size = new System.Drawing.Size(54, 24);
+            this.PackNum.TabIndex = 38;
             // 
             // Make_Data
             // 
@@ -358,6 +359,7 @@
             this.Make_Data.TabIndex = 39;
             this.Make_Data.Text = "数据组包";
             this.Make_Data.UseVisualStyleBackColor = true;
+            this.Make_Data.Click += new System.EventHandler(this.Make_Data_Click);
             // 
             // Send_Data
             // 
@@ -497,8 +499,8 @@
             this.Controls.Add(this.label14);
             this.Controls.Add(this.Send_Data);
             this.Controls.Add(this.Make_Data);
-            this.Controls.Add(this.numericUpDown1);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.PackNum);
+            this.Controls.Add(this.Add_combox);
             this.Controls.Add(this.CRC_Text);
             this.Controls.Add(this.CMD_Text);
             this.Controls.Add(this.Len_Text);
@@ -533,10 +535,11 @@
             this.Name = "Serial";
             this.ShowIcon = false;
             this.Text = "设备测试";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Serial_FormClosing);
             this.Load += new System.EventHandler(this.Serial_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PackNum)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -574,8 +577,8 @@
         private HexNumberTextBox Len_Text;
         private HexNumberTextBox CMD_Text;
         private HexNumberTextBox CRC_Text;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.ComboBox Add_combox;
+        private System.Windows.Forms.NumericUpDown PackNum;
         private System.Windows.Forms.Button Make_Data;
         private System.Windows.Forms.Button Send_Data;
         private System.Windows.Forms.Label label14;

@@ -25,6 +25,9 @@ namespace serial_cmd
         SerialPortListener m_SerialPort = null;
         public Thread ThreadDataHandle;
         int pack = 0;
+        public List<byte> PUD_BYTE = new List<byte> { };
+        public List<byte> SEND_BYTE = new List<byte> { };
+        public int PUD_NUM = 0;
         bool IsInv = false;//是否处于盘点状态
        
         
@@ -54,10 +57,16 @@ namespace serial_cmd
             DEV_HUMID,       /*!< 加湿机*/
             DEV_DEHUMID      /*!< 除湿机*/
         };
+        private struct Device_info
+        {
+            public byte Device_Addr;   //设备地址
+            public DEVICE_TYPE DEVICE_TYPE;//设备类型
+        };
         private INS_STRUCT ins_struct;
         private SerialPort m_s = null;
         private StopBits m_stopbits;
         private Parity m_parity;
+        List<Device_info> device_list = new List<Device_info> { };
 
 
 
@@ -82,7 +91,7 @@ namespace serial_cmd
         }
         private void ins_init()
         {
-            ins_struct.ins_buf = new byte[1024];
+            ins_struct.ins_buf = new byte[30];
             ins_struct.ins_length = 0;
             ins_struct.ins_current = 0;
             ins_struct.ins_end = 0;
@@ -119,16 +128,8 @@ namespace serial_cmd
             Com_CheckBit.SelectedIndex = 0;
             TimeOut_Text.Text = "500";
         }
-        
-        
- 
         private void PortName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //if(m_SerialPort.IsOpen == false && PortName.Items.Count > 0)
-            //{
-            //    if (PortName.SelectedText != "")
-            //        m_SerialPort.PortName = PortName.SelectedText;
-            //}
             state_Lable.Text = "串口号：" + PortName.Text;
         }
 
@@ -159,6 +160,11 @@ namespace serial_cmd
 
         private void But_OpenPort_Click(object sender, EventArgs e)
         {
+            if(PortName.Text == "")
+            {
+                MessageBox.Show("选择串口","警告",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                return;
+            }
             if (m_SerialPort == null)
             {
                 m_SerialPort = new SerialPortListener(PortName.Text, Convert.ToInt32(BaudRate.Text));
@@ -189,8 +195,6 @@ namespace serial_cmd
                     Console.WriteLine($"serialport1.StopBits = {m_SerialPort.StopBits}");
                     Console.WriteLine($"serialport1.Parity = {m_SerialPort.Parity}");
                     state_Lable.Text = "串口已经打开";
-
-
                 }
                 catch (Exception ex)
                 {
@@ -256,7 +260,7 @@ namespace serial_cmd
                 L_start = step - L_end;
                 ins_struct.ins_current = L_start;
             }
-            if (ins_struct.ins_current >= 1024)
+            if (ins_struct.ins_current >= ins_struct.ins_buf.Length)
                 ins_struct.ins_current = 0;
             ins_struct.ins_length -= step;
         }
@@ -271,6 +275,7 @@ namespace serial_cmd
                     {
                         int Frame_Length;
                         int L_end;
+                        Console.WriteLine($"ins_struct.ins_current = {ins_struct.ins_current}");
                         L_end = ins_struct.ins_buf.Length - ins_struct.ins_current;
                         if (L_end > 2)
                         {
@@ -351,6 +356,10 @@ namespace serial_cmd
                                                 break;
 
                                         }
+                                        Device_info device_Info;
+                                        device_Info.Device_Addr = P_frame[3];
+                                        device_Info.DEVICE_TYPE = (DEVICE_TYPE)P_frame[6];
+                                        device_list.Add(device_Info);
                                         this.Invoke(new MethodInvoker(() =>
                                         {
                                             Device_List.AppendText(Device_inf); ;
@@ -406,7 +415,7 @@ namespace serial_cmd
                 }
                 //溢出不做任何事情，数据自动被覆盖      c
             }
-            if (ins_struct.ins_end >= 1024)
+            if (ins_struct.ins_end >= ins_struct.ins_buf.Length)
                 ins_struct.ins_end = 0;
             
             //Console.WriteLine($"ins_struct.ins_length = {ins_struct.ins_length}");
@@ -570,6 +579,13 @@ namespace serial_cmd
                 timer1.Stop();
                 IsInv = false;
                 timer1.Enabled = false;
+                if(device_list.Count > 0)
+                {
+                    foreach(Device_info d_inf in device_list)
+                    {
+                        Add_combox.Items.Add(d_inf.Device_Addr);
+                    }
+                }
             }
             List<byte> Inventory = new List<byte> { };
             Inventory.Add(CDMP_SOH); //
@@ -607,14 +623,8 @@ namespace serial_cmd
                     str1 = trim;
                 }
                 chars = str1.ToCharArray();
-                Console.WriteLine(chars);
-                foreach(char c in chars)
-                {
-                    Console.Write($"{c} ");
-                }
-                Console.WriteLine();
                 string[] chartostring = new string[chars.Length/2];
-                byte[] num = new byte[chars.Length/2];
+                PUD_BYTE.Clear();
                 for ( i = 0;i < chars.Length/2;i ++)
                 {
                     chartostring[i] = chars[i * 2].ToString() + chars[i * 2 + 1].ToString();
@@ -623,25 +633,18 @@ namespace serial_cmd
                 foreach(string s in chartostring)
                 {
                     Console.Write($"{s} ");
-                    num[i] = Byte.Parse(Byte.Parse(s,System.Globalization.NumberStyles.HexNumber).ToString("X2"), 
-                                            System.Globalization.NumberStyles.HexNumber);
-                    i++;
-                }
-                Console.WriteLine();
-                foreach (byte b in num)
-                {
-                    Console.Write($"{b} ");
-                    
-                }
-                Console.WriteLine();
+                    PUD_BYTE.Add(Byte.Parse(Byte.Parse(s, System.Globalization.NumberStyles.HexNumber).ToString("X2"),
+                                            System.Globalization.NumberStyles.HexNumber));
+                } 
             }
         }
 
         private void Send_Data_Click(object sender, EventArgs e)
         {
             //byte[] data = Encoding.GetEncoding("GB2312").GetBytes(rtbResult.Text);
+            
             m_SerialPort.UseEndChar = false;
-            //m_SerialPort.Send(data);
+            m_SerialPort.Send(SEND_BYTE.ToArray());
         }
 
         private void But_Clear_Click(object sender, EventArgs e)
@@ -649,6 +652,36 @@ namespace serial_cmd
             Device_List.Clear();
             lbReceivedCount.Text = "0";
             lbSendCount.Text = "0";
+        }
+
+        private void Make_Data_Click(object sender, EventArgs e)
+        {
+            UInt16 crc16;
+            Len_Text.Text = (8 + PUD_BYTE.Count).ToString();
+            SEND_BYTE.Clear();
+
+            SEND_BYTE.Add(Byte.Parse(Byte.Parse(SOH_Text.Text, System.Globalization.NumberStyles.HexNumber).ToString("X2"),
+                                            System.Globalization.NumberStyles.HexNumber));
+            SEND_BYTE.Add(Byte.Parse(Byte.Parse(VER_Text.Text, System.Globalization.NumberStyles.HexNumber).ToString("X2"),
+                                            System.Globalization.NumberStyles.HexNumber));
+            SEND_BYTE.Add(Convert.ToByte(Len_Text.Text));
+            SEND_BYTE.Add(Convert.ToByte(Add_combox.Text));
+            SEND_BYTE.Add((byte)PackNum.Value);
+            SEND_BYTE.Add(Byte.Parse(Byte.Parse(CMD_Text.Text, System.Globalization.NumberStyles.HexNumber).ToString("X2"),
+                                            System.Globalization.NumberStyles.HexNumber));
+            for(int i = 0;i < PUD_BYTE.Count; i++)
+            {
+                SEND_BYTE.Add(PUD_BYTE[i]);
+            }
+            crc16 = crc16_modbus(SEND_BYTE.ToArray(), SEND_BYTE.ToArray().Length);
+            SEND_BYTE.Add((byte)(crc16 >> 8));
+            SEND_BYTE.Add((byte)crc16);
+            CRC_Text.Text = crc16.ToString("X4");
+        }
+
+        private void Serial_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            System.Environment.Exit(0);
         }
     }
 }
