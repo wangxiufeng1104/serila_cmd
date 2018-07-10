@@ -65,12 +65,12 @@
             this.label15 = new System.Windows.Forms.Label();
             this.lbReceivedCount = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
+            this.But_Clear = new System.Windows.Forms.Button();
             this.CRC_Text = new serial_cmd.HexNumberTextBox(this.components);
             this.CMD_Text = new serial_cmd.HexNumberTextBox(this.components);
             this.Len_Text = new serial_cmd.HexNumberTextBox(this.components);
             this.VER_Text = new serial_cmd.HexNumberTextBox(this.components);
             this.SOH_Text = new serial_cmd.HexNumberTextBox(this.components);
-            this.But_Clear = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
@@ -244,6 +244,7 @@
             // 
             // timer1
             // 
+            this.timer1.Interval = 200;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // label4
@@ -420,6 +421,16 @@
             this.label16.TabIndex = 44;
             this.label16.Text = "接收";
             // 
+            // But_Clear
+            // 
+            this.But_Clear.Location = new System.Drawing.Point(328, 51);
+            this.But_Clear.Name = "But_Clear";
+            this.But_Clear.Size = new System.Drawing.Size(95, 25);
+            this.But_Clear.TabIndex = 48;
+            this.But_Clear.Text = "清空窗口";
+            this.But_Clear.UseVisualStyleBackColor = true;
+            this.But_Clear.Click += new System.EventHandler(this.But_Clear_Click);
+            // 
             // CRC_Text
             // 
             this.CRC_Text.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
@@ -471,16 +482,6 @@
             this.SOH_Text.Size = new System.Drawing.Size(54, 24);
             this.SOH_Text.TabIndex = 30;
             this.SOH_Text.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // But_Clear
-            // 
-            this.But_Clear.Location = new System.Drawing.Point(328, 51);
-            this.But_Clear.Name = "But_Clear";
-            this.But_Clear.Size = new System.Drawing.Size(95, 25);
-            this.But_Clear.TabIndex = 48;
-            this.But_Clear.Text = "清空窗口";
-            this.But_Clear.UseVisualStyleBackColor = true;
-            this.But_Clear.Click += new System.EventHandler(this.But_Clear_Click);
             // 
             // Serial
             // 
