@@ -71,6 +71,7 @@
             this.Len_Text = new serial_cmd.HexNumberTextBox(this.components);
             this.VER_Text = new serial_cmd.HexNumberTextBox(this.components);
             this.SOH_Text = new serial_cmd.HexNumberTextBox(this.components);
+            this.label17 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PackNum)).BeginInit();
             this.SuspendLayout();
@@ -301,6 +302,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Consolas", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.ForeColor = System.Drawing.Color.Red;
             this.label11.Location = new System.Drawing.Point(21, 318);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(32, 17);
@@ -311,6 +313,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Consolas", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.ForeColor = System.Drawing.Color.Red;
             this.label12.Location = new System.Drawing.Point(111, 244);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(32, 17);
@@ -485,11 +488,22 @@
             this.SOH_Text.TabIndex = 30;
             this.SOH_Text.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.ForeColor = System.Drawing.Color.Red;
+            this.label17.Location = new System.Drawing.Point(13, 369);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(144, 17);
+            this.label17.TabIndex = 49;
+            this.label17.Text = "*红色部分为必填项";
+            // 
             // Serial
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(921, 557);
+            this.Controls.Add(this.label17);
             this.Controls.Add(this.But_Clear);
             this.Controls.Add(this.lbSendCount);
             this.Controls.Add(this.label15);
@@ -588,6 +602,7 @@
         private System.Windows.Forms.Label lbReceivedCount;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Button But_Clear;
+        private System.Windows.Forms.Label label17;
     }
 }
 
