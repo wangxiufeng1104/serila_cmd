@@ -28,6 +28,7 @@ namespace serial_cmd
         public List<byte> PUD_BYTE = new List<byte> { };
         public List<byte> SEND_BYTE = new List<byte> { };
         public int PUD_NUM = 0;
+        string frame_data = string.Empty;
         bool IsInv = false;//是否处于盘点状态
        
         
@@ -40,13 +41,12 @@ namespace serial_cmd
         };
         enum CMD_TYPE
         {
-            READ_ALL = 0,/*!< 读所有数据，要求设备上传所有数据*/
-            READ_Date,    /*!< 读指定数据，要求设备上传指定数据内容*/
-            WRITE_DATE,   /*!< 写指定数据，要求设备按照指定内容操作*/
-            RESPOND_DATE, /*!< 响应数据，对于读报文，返回数据内容，对于写和升级报文，返回操作状态*/
-            UPDATE_DATE,  /*!< 升级请求，对于同一次升级，Packet ID应相同*/
-            UPDATE_RES,   /*!< 升级响应，响应Packet ID与请求的数值应相同*/
-            INVENTORY     /*!< 盘点设备*/
+            READ_SINGLE = 0x81,    /*!< 读单个寄存器*/
+            READ_MUL,           /*!< 读多个寄存器*/
+            WRITE_SINGLE,       /*!< 写单个寄存器*/
+            WRITE_MUL,          /*!< 写多个寄存器*/
+            UPDATE_DATE,        /*!< 升级请求，对于同一次升级，Packet ID应相同*/
+            INVENTORY           /*!< 盘点设备*/
         };
         enum DEVICE_TYPE
         {
@@ -59,7 +59,8 @@ namespace serial_cmd
         };
         private struct Device_info
         {
-            public byte Device_Addr;   //设备地址
+            public byte Device_Addr;       //设备地址
+            public string Device_str;      //设备名称
             public DEVICE_TYPE DEVICE_TYPE;//设备类型
         };
         private INS_STRUCT ins_struct;
@@ -79,9 +80,6 @@ namespace serial_cmd
             SOH_Text.Text = "7e";
             VER_Text.MaxLength = 2;
             VER_Text.Text = "10";
-            
-
-            
             PUD_Text.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             PUD_Text.KeyPress += numberTextBox_KeyPress;
             this.Text = this.Text + softwareversion;
@@ -91,7 +89,7 @@ namespace serial_cmd
         }
         private void ins_init()
         {
-            ins_struct.ins_buf = new byte[30];
+            ins_struct.ins_buf = new byte[1024];
             ins_struct.ins_length = 0;
             ins_struct.ins_current = 0;
             ins_struct.ins_end = 0;
@@ -266,10 +264,12 @@ namespace serial_cmd
         }
         void Protocol_Resolution()
         {
-            while(true)
+            
+            while (true)
             {
                 if (ins_struct.ins_length >= 8)   //指令队列中存在未处理的指令
                 {
+                    
                     //1、寻找SOH
                     if (CDMP_SOH == ins_struct.ins_buf[ins_struct.ins_current])//非SOH || 地址错误
                     {
@@ -303,69 +303,96 @@ namespace serial_cmd
                                 Array.Copy(ins_struct.ins_buf, 0, P_frame, L_end, Frame_Length - L_end);
                             }
                             crc16 = CRC16_MODBUS(P_frame, Frame_Length - 2);
+                            Console.WriteLine($"crc16 = {crc16}");
                             if ((crc16 == ((P_frame[Frame_Length - 2] << 8) | (P_frame[Frame_Length - 1]))))
                             {
+                                frame_data = "原始数据：";
+                                foreach (byte b in P_frame)
+                                {
+                                    frame_data += b.ToString("X2");
+                                    frame_data += " ";
+                                }
+                                frame_data += "\r\n";
+                                frame_data += "数据说明：";
+                                
                                 switch ((CMD_TYPE)P_frame[5])
                                 {
-                                    case CMD_TYPE.READ_ALL:
-                                        Console.WriteLine("read all data\n");
+                                    case CMD_TYPE.READ_SINGLE:
+                                        frame_data += $"设备地址：{P_frame[3].ToString("x2")} ";
+                                        foreach(Device_info d_inf in device_list)
+                                        {
+                                            if(d_inf.Device_Addr == P_frame[3])
+                                            {
+                                                frame_data += $"设备类型：{d_inf.Device_str} ";
+                                                break;
+                                            }
+                                        }
+                                        frame_data += $"读单个寄存器：{P_frame[6].ToString("x2")}的值为{P_frame[7]}\r\n";
                                         break;
-                                    case CMD_TYPE.READ_Date:
+                                    case CMD_TYPE.READ_MUL:
                                         Console.WriteLine("read some data\n");
                                         break;
-                                    case CMD_TYPE.WRITE_DATE:
-                                        Console.WriteLine("write date\n");
+                                    case CMD_TYPE.WRITE_SINGLE:
+                                        frame_data += $"设备地址：{P_frame[3].ToString("x2")} ";
+                                        foreach (Device_info d_inf in device_list)
+                                        {
+                                            if (d_inf.Device_Addr == P_frame[3])
+                                            {
+                                                frame_data += $"设备类型：{d_inf.Device_str} ";
+                                                break;
+                                            }
+                                        }
+                                        frame_data += $"写单个寄存器：{P_frame[6].ToString("x2")}\r\n";
                                         break;
-                                    case CMD_TYPE.RESPOND_DATE:
+                                        break;
+                                    case CMD_TYPE.WRITE_MUL:
                                         Console.WriteLine("respond data\n");
                                         break;
                                     case CMD_TYPE.UPDATE_DATE:
                                         Console.WriteLine("update date\n");
                                         break;
-                                    case CMD_TYPE.UPDATE_RES:
-                                        Console.WriteLine("update respoond\n");
-                                        break;
                                     case CMD_TYPE.INVENTORY://盘点设备
-                                                            //Device_List.Text += "盘点设备：\r\n";
-                                        string Device_inf = "设备地址：";
-                                        Device_inf += ("0x" + P_frame[3].ToString("x2")) + " ";
-                                        Device_inf += "设备类型：";
-                                        //Device_inf += pack.ToString();
+                                                    //Device_List.Text += "盘点设备：\r\n";
+                                        frame_data += "设备地址：";
+                                        frame_data += ("0x" + P_frame[3].ToString("x2")) + " ";
+                                        Device_info device_Info;
+                                        frame_data += "设备类型：";
                                         switch ((DEVICE_TYPE)P_frame[6])
                                         {
                                             case DEVICE_TYPE.DEV_BOOT:
-                                                Device_inf += "Boot Loader\r\n";
+                                                device_Info.Device_str = "Boot Loader";
+                                                frame_data += "Boot Loader\r\n";
                                                 break;
                                             case DEVICE_TYPE.DEV_FAN_COIL:
-                                                Device_inf += "风机盘管\r\n";
+                                                device_Info.Device_str = "风机盘管";
+                                                frame_data += "风机盘管\r\n";
                                                 break;
                                             case DEVICE_TYPE.DEV_FLOOR_HEAT:
-                                                Device_inf += "地暖\r\n";
+                                                device_Info.Device_str = "地暖";
+                                                frame_data += "地暖\r\n";
                                                 break;
                                             case DEVICE_TYPE.DEV_FRESH:
-                                                Device_inf += "新风\r\n";
+                                                device_Info.Device_str = "新风";
+                                                frame_data += "新风\r\n";
                                                 break;
                                             case DEVICE_TYPE.DEV_HUMID:
-                                                Device_inf += "加湿机\r\n";
+                                                device_Info.Device_str = "加湿机";
+                                                frame_data += "加湿机\r\n";
                                                 break;
                                             case DEVICE_TYPE.DEV_DEHUMID:
-                                                Device_inf += "除湿机\r\n";
+                                                device_Info.Device_str = "除湿机";
+                                                frame_data += "除湿机\r\n";
                                                 break;
                                             default:
-                                                Device_inf += "未定义设备\r\n";
+                                                device_Info.Device_str = "未定义设备";
+                                                frame_data += "未定义设备\r\n";
                                                 break;
 
                                         }
-                                        Device_info device_Info;
+                                        
                                         device_Info.Device_Addr = P_frame[3];
                                         device_Info.DEVICE_TYPE = (DEVICE_TYPE)P_frame[6];
                                         device_list.Add(device_Info);
-                                        this.Invoke(new MethodInvoker(() =>
-                                        {
-                                            Device_List.AppendText(Device_inf); ;
-                                            Device_List.ScrollToCaret();
-                                        }));
-                                        
                                         Console.WriteLine($"pack = {pack}");
                                         pack++;
                                         break;
@@ -373,6 +400,11 @@ namespace serial_cmd
                                         Console.WriteLine("invalid cmd\n");
                                         break;
                                 }
+                                this.Invoke(new MethodInvoker(() =>
+                                {
+                                    Device_List.AppendText(frame_data);
+                                    Device_List.ScrollToCaret();
+                                }));
                                 right_shift_current(Frame_Length);
                             }
                             else
@@ -491,6 +523,7 @@ namespace serial_cmd
             {
                 return;
             }
+            device_list.Clear();
             IsInv = true;
             timer1.Enabled = true;
             timer1.Start(); //
@@ -579,8 +612,10 @@ namespace serial_cmd
                 timer1.Stop();
                 IsInv = false;
                 timer1.Enabled = false;
-                if(device_list.Count > 0)
+                Add_combox.Items.Clear();
+                if (device_list.Count > 0)
                 {
+                    
                     foreach(Device_info d_inf in device_list)
                     {
                         Add_combox.Items.Add(d_inf.Device_Addr);
@@ -590,11 +625,11 @@ namespace serial_cmd
             List<byte> Inventory = new List<byte> { };
             Inventory.Add(CDMP_SOH); //
             Inventory.Add(CDMP_VERSION);
-            Inventory.Add(9); //length
+            Inventory.Add(8); //length
             Inventory.Add(add_max);
             Inventory.Add(0);
-            Inventory.Add(0x06);
-            Inventory.Add(0x00);
+            Inventory.Add((byte)CMD_TYPE.INVENTORY);
+            //Inventory.Add(0x00);
             crc16 = crc16_modbus(Inventory.ToArray(), Inventory.ToArray().Length);
             Inventory.Add((byte)(crc16 >> 8));
             Inventory.Add((byte)crc16);
@@ -641,8 +676,8 @@ namespace serial_cmd
 
         private void Send_Data_Click(object sender, EventArgs e)
         {
-            //byte[] data = Encoding.GetEncoding("GB2312").GetBytes(rtbResult.Text);
-            
+            if(m_SerialPort == null)
+                return;
             m_SerialPort.UseEndChar = false;
             m_SerialPort.Send(SEND_BYTE.ToArray());
         }
@@ -652,8 +687,13 @@ namespace serial_cmd
             Device_List.Clear();
             lbReceivedCount.Text = "0";
             lbSendCount.Text = "0";
+            frame_data = "";
         }
-
+        /// <summary>
+        /// 数据组包
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Make_Data_Click(object sender, EventArgs e)
         {
             UInt16 crc16;
@@ -665,7 +705,13 @@ namespace serial_cmd
             SEND_BYTE.Add(Byte.Parse(Byte.Parse(VER_Text.Text, System.Globalization.NumberStyles.HexNumber).ToString("X2"),
                                             System.Globalization.NumberStyles.HexNumber));
             SEND_BYTE.Add(Convert.ToByte(Len_Text.Text));
+            if(Add_combox.Text == "")
+            {
+                MessageBox.Show("地址为空","警告",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                return;
+            }
             SEND_BYTE.Add(Convert.ToByte(Add_combox.Text));
+            
             SEND_BYTE.Add((byte)PackNum.Value);
             SEND_BYTE.Add(Byte.Parse(Byte.Parse(CMD_Text.Text, System.Globalization.NumberStyles.HexNumber).ToString("X2"),
                                             System.Globalization.NumberStyles.HexNumber));
@@ -678,10 +724,25 @@ namespace serial_cmd
             SEND_BYTE.Add((byte)crc16);
             CRC_Text.Text = crc16.ToString("X4");
         }
-
+        /// <summary>
+        /// 强制退出
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Serial_FormClosing(object sender, FormClosingEventArgs e)
         {
             System.Environment.Exit(0);
+        }
+
+        private void Clipboard_Click(object sender, EventArgs e)
+        {
+            string data = string.Empty;
+            foreach(byte b in SEND_BYTE)
+            {
+                data += b.ToString("x2");
+                data += " ";
+            }
+            Clipboard.SetDataObject(data);
         }
     }
 }

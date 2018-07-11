@@ -66,12 +66,13 @@
             this.lbReceivedCount = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.But_Clear = new System.Windows.Forms.Button();
+            this.label17 = new System.Windows.Forms.Label();
+            this.But_Clipboard = new System.Windows.Forms.Button();
             this.CRC_Text = new serial_cmd.HexNumberTextBox(this.components);
-            this.CMD_Text = new serial_cmd.HexNumberTextBox(this.components);
             this.Len_Text = new serial_cmd.HexNumberTextBox(this.components);
             this.VER_Text = new serial_cmd.HexNumberTextBox(this.components);
             this.SOH_Text = new serial_cmd.HexNumberTextBox(this.components);
-            this.label17 = new System.Windows.Forms.Label();
+            this.CMD_Text = new System.Windows.Forms.ComboBox();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PackNum)).BeginInit();
             this.SuspendLayout();
@@ -147,7 +148,7 @@
             this.state_Lable});
             this.statusStrip1.Location = new System.Drawing.Point(0, 535);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(921, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1069, 22);
             this.statusStrip1.TabIndex = 5;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -240,12 +241,12 @@
             this.Device_List.Multiline = true;
             this.Device_List.Name = "Device_List";
             this.Device_List.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.Device_List.Size = new System.Drawing.Size(445, 512);
+            this.Device_List.Size = new System.Drawing.Size(581, 512);
             this.Device_List.TabIndex = 13;
             // 
             // timer1
             // 
-            this.timer1.Interval = 200;
+            this.timer1.Interval = 50;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // label4
@@ -272,6 +273,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Consolas", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.Color.Red;
             this.label8.Location = new System.Drawing.Point(267, 186);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(64, 17);
@@ -436,6 +438,26 @@
             this.But_Clear.UseVisualStyleBackColor = true;
             this.But_Clear.Click += new System.EventHandler(this.But_Clear_Click);
             // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.ForeColor = System.Drawing.Color.Red;
+            this.label17.Location = new System.Drawing.Point(13, 369);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(144, 17);
+            this.label17.TabIndex = 49;
+            this.label17.Text = "*红色部分为必填项";
+            // 
+            // But_Clipboard
+            // 
+            this.But_Clipboard.Location = new System.Drawing.Point(280, 393);
+            this.But_Clipboard.Name = "But_Clipboard";
+            this.But_Clipboard.Size = new System.Drawing.Size(105, 23);
+            this.But_Clipboard.TabIndex = 50;
+            this.But_Clipboard.Text = "复制数据";
+            this.But_Clipboard.UseVisualStyleBackColor = true;
+            this.But_Clipboard.Click += new System.EventHandler(this.Clipboard_Click);
+            // 
             // CRC_Text
             // 
             this.CRC_Text.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
@@ -446,16 +468,6 @@
             this.CRC_Text.Size = new System.Drawing.Size(139, 24);
             this.CRC_Text.TabIndex = 36;
             this.CRC_Text.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // CMD_Text
-            // 
-            this.CMD_Text.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.CMD_Text.Location = new System.Drawing.Point(100, 264);
-            this.CMD_Text.MaxLength = 4;
-            this.CMD_Text.Name = "CMD_Text";
-            this.CMD_Text.Size = new System.Drawing.Size(54, 24);
-            this.CMD_Text.TabIndex = 35;
-            this.CMD_Text.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // Len_Text
             // 
@@ -488,21 +500,27 @@
             this.SOH_Text.TabIndex = 30;
             this.SOH_Text.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // label17
+            // CMD_Text
             // 
-            this.label17.AutoSize = true;
-            this.label17.ForeColor = System.Drawing.Color.Red;
-            this.label17.Location = new System.Drawing.Point(13, 369);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(144, 17);
-            this.label17.TabIndex = 49;
-            this.label17.Text = "*红色部分为必填项";
+            this.CMD_Text.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CMD_Text.FormattingEnabled = true;
+            this.CMD_Text.Items.AddRange(new object[] {
+            "81",
+            "82",
+            "83",
+            "84"});
+            this.CMD_Text.Location = new System.Drawing.Point(100, 264);
+            this.CMD_Text.Name = "CMD_Text";
+            this.CMD_Text.Size = new System.Drawing.Size(54, 25);
+            this.CMD_Text.TabIndex = 51;
             // 
             // Serial
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(921, 557);
+            this.ClientSize = new System.Drawing.Size(1069, 557);
+            this.Controls.Add(this.CMD_Text);
+            this.Controls.Add(this.But_Clipboard);
             this.Controls.Add(this.label17);
             this.Controls.Add(this.But_Clear);
             this.Controls.Add(this.lbSendCount);
@@ -516,7 +534,6 @@
             this.Controls.Add(this.PackNum);
             this.Controls.Add(this.Add_combox);
             this.Controls.Add(this.CRC_Text);
-            this.Controls.Add(this.CMD_Text);
             this.Controls.Add(this.Len_Text);
             this.Controls.Add(this.VER_Text);
             this.Controls.Add(this.SOH_Text);
@@ -589,7 +606,6 @@
         private HexNumberTextBox SOH_Text;
         private HexNumberTextBox VER_Text;
         private HexNumberTextBox Len_Text;
-        private HexNumberTextBox CMD_Text;
         private HexNumberTextBox CRC_Text;
         private System.Windows.Forms.ComboBox Add_combox;
         private System.Windows.Forms.NumericUpDown PackNum;
@@ -603,6 +619,8 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Button But_Clear;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Button But_Clipboard;
+        private System.Windows.Forms.ComboBox CMD_Text;
     }
 }
 
